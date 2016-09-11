@@ -185,6 +185,7 @@ var io = {
 
     convertToOH : function(item, val) {
         var type = io.getTypeFromItem(item);
+        var subItem = io.getSubItemFromItem(item);
         var ohVal = val;
 
         switch (type) {
@@ -193,6 +194,19 @@ var io = {
                 ohVal = "ON";
             else
                 ohVal = "OFF";
+            break;
+        case "Player":
+            if (subItem == 'Play') {
+                if (val == 1)
+                    ohVal = "PLAY";
+                else
+                    ohVal = "PAUSE";
+            } else if (subItem == 'Next') {
+                if (val == 1)
+                    ohVal = "NEXT";
+                else
+                    ohVal = "PREVIOUS";
+            }
             break;
         }
 
@@ -210,6 +224,12 @@ var io = {
             else
                 val = 0;
             break;
+        case "Player":
+            if (ohVal == "PLAY")
+                val = 1;
+            else
+                val = 0;
+            break;
         }
 
         return val;
@@ -220,7 +240,7 @@ var io = {
 
         var type = "Unknown";
 
-        if (itemArray.length == 2) {
+        if (itemArray.length >= 2) {
             type = itemArray[0]
         }
 
@@ -229,12 +249,24 @@ var io = {
         return type;
     },
 
+    getSubItemFromItem : function(item) {
+        var itemArray = item.split(":");
+
+        var subItem = null;
+
+        if (itemArray.length >= 3) {
+            subItem = itemArray[2]
+        }
+
+        return subItem;
+    },
+
     getOHItemFromItem : function(item) {
         var itemArray = item.split(":");
 
         var ohItem = item;
 
-        if (itemArray.length == 2) {
+        if (itemArray.length >= 2) {
             ohItem = itemArray[1]
         }
 
